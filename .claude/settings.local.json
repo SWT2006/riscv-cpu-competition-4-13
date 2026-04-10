@@ -25,7 +25,17 @@
       "Bash(sort -t: -k2 -n)",
       "Bash(rm -f cpu_top.v stage_if.v stage_id.v stage_ex.v stage_mem.v stage_wb.v pipe_ifid.v pipe_idex.v pipe_exmem.v pipe_memwb.v control_unit.v imm_gen.v csr_unit.v hazard_unit.v forwarding_unit.v instruction_memory.v data_memory.v riscv_soc.v)",
       "Bash(ls *.v)",
-      "Bash(ls *.sv)"
+      "Bash(ls *.sv)",
+      "Bash(grep -E '\\\\.\\(sv|v|sh|tcl|bat|py|md|coe\\)$')",
+      "Bash(iverilog -V)",
+      "Bash(iverilog -g2012 -Wall -o tb/soc_tb.vvp rtl/control_unit.sv rtl/imm_gen.sv rtl/hazard_unit.sv rtl/forwarding_unit.sv rtl/csr_unit.sv rtl/stage_if.sv rtl/stage_id.sv rtl/stage_ex.sv rtl/stage_mem.sv rtl/stage_wb.sv rtl/pipe_ifid.sv rtl/pipe_idex.sv rtl/pipe_exmem.sv rtl/pipe_memwb.sv rtl/cpu_core.sv tb/soc_tb.sv)",
+      "Bash(vvp soc_tb.vvp)",
+      "Bash(xxd /c/Users/38560/Desktop/work/riscv-cpu-competition/validate/tests/isa/generated/rv32ui-p-add.bin)",
+      "Bash(iverilog -g2012 -o soc_tb.vvp soc_tb.sv ../rtl/cpu_core.sv ../rtl/stage_if.sv ../rtl/stage_id.sv ../rtl/stage_ex.sv ../rtl/stage_mem.sv ../rtl/stage_wb.sv ../rtl/pipe_ifid.sv ../rtl/pipe_idex.sv ../rtl/pipe_exmem.sv ../rtl/pipe_memwb.sv ../rtl/control_unit.sv ../rtl/hazard_unit.sv ../rtl/forwarding_unit.sv ../rtl/imm_gen.sv ../rtl/csr_unit.sv)",
+      "Bash(vvp out.vvp +sig_base=2048 +sig_words=36)",
+      "Bash(vvp out.vvp +sig_base=2048 +sig_words=34)",
+      "Bash(grep -v \"^--$\")",
+      "Bash(vvp out.vvp +sig_base=2048 +sig_words=16)"
     ]
   }
 }

@@ -34,34 +34,38 @@ def main():
 
     iverilog_cmd = ['iverilog']
     iverilog_cmd += ['-o', 'out.vvp']
-    iverilog_cmd += ['-g2012']          # Verilog-2012 / SystemVerilog lite
+    iverilog_cmd += ['-g2012']          # SystemVerilog 2012
     iverilog_cmd += ['-Wall']
 
-    # Testbench
+    # Testbench (plain Verilog)
     iverilog_cmd.append(rtl_dir + tb_file)
 
-    # RTL source files
-    rtl_files = [
-        '/rtl/control_unit.v',
-        '/rtl/cpu_top.v',
-        '/rtl/csr_unit.v',
-        '/rtl/data_memory.v',
-        '/rtl/forwarding_unit.v',
-        '/rtl/hazard_unit.v',
-        '/rtl/imm_gen.v',
-        '/rtl/instruction_memory.v',
-        '/rtl/pipe_exmem.v',
-        '/rtl/pipe_idex.v',
-        '/rtl/pipe_ifid.v',
-        '/rtl/pipe_memwb.v',
-        '/rtl/riscv_soc.v',
-        '/rtl/stage_ex.v',
-        '/rtl/stage_id.v',
-        '/rtl/stage_if.v',
-        '/rtl/stage_mem.v',
-        '/rtl/stage_wb.v',
+    # SoC wrapper (plain Verilog – must come before .sv RTL so module
+    # definitions are visible when iverilog parses the testbench)
+    iverilog_cmd.append(rtl_dir + '/rtl/riscv_soc.v')
+
+    # RTL source files (SystemVerilog .sv)
+    # Note: display_seg, counter, dram_driver, perip_bridge, student_top are NOT
+    # included here because the sim wrapper (riscv_soc.v) uses sim_imem/sim_dmem
+    # directly instead of the board-specific peripherals.
+    rtl_sv_files = [
+        '/rtl/control_unit.sv',
+        '/rtl/cpu_core.sv',
+        '/rtl/csr_unit.sv',
+        '/rtl/forwarding_unit.sv',
+        '/rtl/hazard_unit.sv',
+        '/rtl/imm_gen.sv',
+        '/rtl/pipe_exmem.sv',
+        '/rtl/pipe_idex.sv',
+        '/rtl/pipe_ifid.sv',
+        '/rtl/pipe_memwb.sv',
+        '/rtl/stage_ex.sv',
+        '/rtl/stage_id.sv',
+        '/rtl/stage_if.sv',
+        '/rtl/stage_mem.sv',
+        '/rtl/stage_wb.sv',
     ]
-    for f in rtl_files:
+    for f in rtl_sv_files:
         iverilog_cmd.append(rtl_dir + f)
 
     print('Compiling: ' + ' '.join(iverilog_cmd))

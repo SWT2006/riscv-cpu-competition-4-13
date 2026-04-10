@@ -25,14 +25,16 @@ module csr_unit (
     reg [31:0] mcause;
     reg [31:0] mstatus;
     reg [31:0] mtval;
+    reg [31:0] mscratch;
 
     always @(posedge clk) begin
         if (cpu_rst) begin
-            mtvec   <= 32'h0000_0000;  // software must set this before trapping
-            mepc    <= 32'h0;
-            mcause  <= 32'h0;
-            mstatus <= 32'h0;
-            mtval   <= 32'h0;
+            mtvec    <= 32'h0000_0000;  // software must set this before trapping
+            mepc     <= 32'h0;
+            mcause   <= 32'h0;
+            mstatus  <= 32'h0;
+            mtval    <= 32'h0;
+            mscratch <= 32'h0;
         end else begin
             // Trap update has priority over CSR instruction writes for mepc/mcause/mtval
             if (trap_valid) begin
@@ -41,8 +43,9 @@ module csr_unit (
             end
             if (csr_wen) begin
                 case (csr_waddr)
-                    12'h300: mstatus <= csr_wdata;
-                    12'h305: mtvec   <= csr_wdata;
+                    12'h300: mstatus  <= csr_wdata;
+                    12'h305: mtvec    <= csr_wdata;
+                    12'h340: mscratch <= csr_wdata;
                     12'h341: if (!trap_valid) mepc   <= csr_wdata;
                     12'h342: if (!trap_valid) mcause <= csr_wdata;
                     12'h343: if (!trap_valid) mtval  <= csr_wdata;
@@ -57,6 +60,7 @@ module csr_unit (
         case (csr_raddr)
             12'h300: csr_rdata = mstatus;
             12'h305: csr_rdata = mtvec;
+            12'h340: csr_rdata = mscratch;
             12'h341: csr_rdata = mepc;
             12'h342: csr_rdata = mcause;
             12'h343: csr_rdata = mtval;

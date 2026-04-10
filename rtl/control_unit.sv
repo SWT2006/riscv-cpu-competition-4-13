@@ -158,11 +158,12 @@ module control_unit (
 
             7'b1110011: begin  // SYSTEM
                 if (funct3 == 3'b000) begin
-                    // Decode by funct12 to avoid false-triggering ecall on EBREAK/WFI/SRET/MRET
+                    // Decode by funct12; ecall also covers EBREAK (stage_ex uses csr_addr to set mcause)
                     case (funct12)
-                        12'h000: ecall = 1'b1;  // ECALL only
+                        12'h000: ecall = 1'b1;  // ECALL — mcause=11 in stage_ex
+                        12'h001: ecall = 1'b1;  // EBREAK — mcause=3 in stage_ex (csr_addr==12'h001)
                         12'h302: mret  = 1'b1;  // MRET
-                        // 12'h001 = EBREAK, 12'h105 = WFI, 12'h102 = SRET: treat as NOP
+                        // 12'h105 = WFI, 12'h102 = SRET: treat as NOP
                         default: ;
                     endcase
                 end else begin

@@ -142,16 +142,26 @@ module cpu_core (
     );
 
     // -------------------------------------------------------------------
+    // CSR EX→ID forwarding:
+    // When a CSR write is in EX and the next instruction in ID reads the
+    // same CSR register, forward the new write data to avoid a RAW hazard.
+    // -------------------------------------------------------------------
+    wire [31:0] id_csr_rdata_fwd =
+        (ex_csr_wen && (ex_csr_waddr == ifid_instruction[31:20]))
+            ? ex_csr_wdata
+            : id_csr_rdata_raw;
+
+    // -------------------------------------------------------------------
     // Stage 2: ID
     // -------------------------------------------------------------------
-    stage_id u_id (
+    stage_id u_stage_id (
         .clk          (cpu_clk),
         .cpu_rst      (cpu_rst),
         .instruction  (ifid_instruction),
         .wb_reg_write (memwb_reg_write),
         .wb_rd_addr   (memwb_rd_addr),
         .wb_write_data(wb_write_data),
-        .csr_rdata    (id_csr_rdata_raw),
+        .csr_rdata    (id_csr_rdata_fwd),
         .rs1_data     (id_rs1_data),
         .rs2_data     (id_rs2_data),
         .imm          (id_imm),

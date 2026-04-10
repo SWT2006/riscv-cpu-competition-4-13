@@ -164,8 +164,9 @@ module soc_tb;
     initial begin
         for (j = 0; j < 16384; j = j + 1) irom_model[j] = 32'b0;
         for (j = 0; j < 16384; j = j + 1) dram_model[j] = 32'b0;
-        // Uncomment to load a program:
-        // $readmemh("irom.hex", irom_model);
+        // Load program images:
+        $readmemh("irom.hex", irom_model);
+        $readmemh("dram.hex", dram_model);
     end
 
     // ---------------------------------------------------------------
@@ -174,7 +175,7 @@ module soc_tb;
     initial begin
         $dumpfile("soc_tb.vcd");
         $dumpvars(0, soc_tb);
-        #2_000_000;   // 2 ms sim time
+        #20_000_000;   // 20 ms sim time
         $display("[TB] Simulation complete. LED=0x%08h SEG=0x%08h CNT=%0d ms",
                  virtual_led, seg_reg, cnt_ms);
         $finish;

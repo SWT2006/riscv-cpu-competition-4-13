@@ -71,7 +71,9 @@ module tinyriscv_soc_tb;
     // Detect tohost write (address 0x0000_1000, write enable asserted)
     // -------------------------------------------------------------------------
     // Signature dump parameters – read from plusargs, defaults match most rv32i binaries
-    localparam TOHOST_ADDR = 32'h0000_1000;
+    // CPU resets to PC=0x8000_0000; compliance binaries are linked at 0x0
+    // but auipc shifts tohost address by 0x8000_0000 at runtime.
+    localparam TOHOST_ADDR = 32'h8000_1000;
 
     integer SIG_BASE_WORD;
     integer SIG_WORDS;

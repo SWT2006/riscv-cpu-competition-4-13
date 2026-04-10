@@ -170,11 +170,12 @@ module stage_ex (
                                         pc_branch;
 
     // ---------------------------------------------------------------
-    // Trap output (ECALL only; no misalignment exceptions)
+    // Trap output (ECALL and EBREAK; distinguished by idex_csr_addr)
     // ---------------------------------------------------------------
     assign trap_valid  = idex_ecall;
     assign trap_epc    = idex_pc;
-    assign trap_mcause = 32'd11;  // ECALL from M-mode
+    // ECALL from M-mode: mcause=11; EBREAK: mcause=3
+    assign trap_mcause = (idex_csr_addr == 12'h001) ? 32'd3 : 32'd11;
 
     // ---------------------------------------------------------------
     // CSR write data (for CSR instructions)
